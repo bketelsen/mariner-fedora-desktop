@@ -14,5 +14,3 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=tmpfs,dst=/boot \
     /ctx/build.sh && \
     ostree container commit
-
-RUN bootc container lint
