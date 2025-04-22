@@ -18,3 +18,28 @@ dnf5 -y install \
 	azurelinux-repos-shared \
 	azurelinux-rpm-macros \
 	azurelinux-sysinfo
+
+# Install Azure Linux kernel
+dnf5 -y remove --no-autoremove \
+	kernel \
+	kernel-core \
+	kernel-modules \
+	kernel-modules-core \
+	kernel-modules-extra
+
+dnf5 -y install \
+	kernel \
+	kernel-drivers-gpu \
+	kernel-drivers-intree-amdgpu \
+	kernel-drivers-sound \
+	kernel-drivers-accessibility \
+	kernel-uvm
+
+# Flatten the kernel, bootc doesn't use /boot
+QUALIFIED_KERNEL="$(dnf5 repoquery --installed --queryformat='%{evr}' "kernel")"
+mv /boot/vmlinuz-"$QUALIFIED_KERNEL" /usr/lib/modules/"$QUALIFIED_KERNEL"/vmlinuz
+
+# Rebuild initramfs
+/usr/bin/dracut --no-hostonly --kver "$QUALIFIED_KERNEL" --reproducible --zstd -v --add ostree -f "/usr/lib/modules/$QUALIFIED_KERNEL/initramfs.img"
+
+chmod 0600 /usr/lib/modules/"$QUALIFIED_KERNEL"/initramfs.img
