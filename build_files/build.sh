@@ -5,10 +5,11 @@ set -ouex pipefail
 dnf5 -y remove \
 	firefox
 
-curl -o /etc/yum.repos.d/microsoft-edge.repo https://packages.microsoft.com/yumrepos/edge/config.repo
-echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\nautorefresh=1\ntype=rpm-md\ngpgcheck=0\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | tee /etc/yum.repos.d/vscode.repo > /dev/null
+echo -e "[edge-yum]\nname=edge-yum\nbaseurl=https://packages.microsoft.com/yumrepos/edge/\ngpgcheck=0\nenabled=1" | tee /etc/yum.repos.d/microsoft-edge.repo > /dev/null
+echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\nautorefresh=1\ntype=rpm-md\ngpgcheck=0" | tee /etc/yum.repos.d/vscode.repo > /dev/null
 
 dnf5 -y install \
+	microsoft-edge-stable \
 	code
 
 # Remove fedora-release packages (with nodeps), then immeidately install the mariner replacement
