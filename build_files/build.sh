@@ -9,7 +9,6 @@ echo -e "[edge-yum]\nname=edge-yum\nbaseurl=https://packages.microsoft.com/yumre
 echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\nautorefresh=1\ntype=rpm-md\ngpgcheck=0" | tee /etc/yum.repos.d/vscode.repo > /dev/null
 
 dnf5 -y install \
-	microsoft-edge-stable \
 	code
 
 # Remove fedora-release packages (with nodeps), then immeidately install the mariner replacement
