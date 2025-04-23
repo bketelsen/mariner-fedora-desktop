@@ -9,7 +9,6 @@ curl -o /etc/yum.repos.d/microsoft-edge.repo https://packages.microsoft.com/yumr
 echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\nautorefresh=1\ntype=rpm-md\ngpgcheck=0\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | tee /etc/yum.repos.d/vscode.repo > /dev/null
 
 dnf5 -y install \
-	microsoft-edge-beta \
 	code
 
 # Remove fedora-release packages (with nodeps), then immeidately install the mariner replacement
