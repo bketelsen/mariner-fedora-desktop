@@ -5,13 +5,7 @@ set -ouex pipefail
 dnf5 -y remove \
 	firefox
 
-echo -e "[edge-yum]\nname=edge-yum\nbaseurl=https://packages.microsoft.com/yumrepos/edge/\ngpgcheck=0\nenabled=1" | tee /etc/yum.repos.d/microsoft-edge.repo > /dev/null
-echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\nautorefresh=1\ntype=rpm-md\ngpgcheck=0" | tee /etc/yum.repos.d/vscode.repo > /dev/null
-
-dnf5 -y install \
-	code
-
-# Remove fedora-release packages (with nodeps), then immeidately install the mariner replacement
+# Remove fedora-release packages (with nodeps), then immediately install the mariner replacement
 # This must be a direct RPM URL because we're unable to use the azure linux repos without a valid version in os-release. It'll get updated in the next step.
 rpm -ev $(rpm -qa | grep ^fedora-) --nodeps
 rpm -iv https://packages.microsoft.com/yumrepos/azurelinux-3.0-prod-base-x86_64/Packages/a/azurelinux-release-3.0-25.azl3.noarch.rpm
