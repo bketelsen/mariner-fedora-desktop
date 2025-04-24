@@ -5,8 +5,8 @@ set -ouex pipefail
 dnf5 -y remove \
 	firefox
 
-echo -e "[edge-yum]\nname=edge-yum\nbaseurl=https://packages.microsoft.com/yumrepos/edge/\ngpgcheck=0\nenabled=1" | tee /etc/yum.repos.d/microsoft-edge.repo > /dev/null
-echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\nautorefresh=1\ntype=rpm-md\ngpgcheck=0" | tee /etc/yum.repos.d/vscode.repo > /dev/null
+echo -e "[edge-yum]\nname=edge-yum\nbaseurl=https://packages.microsoft.com/yumrepos/edge/\ngpgcheck=0\nenabled=1" | tee /etc/yum.repos.d/microsoft-edge.repo >/dev/null
+echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\nautorefresh=1\ntype=rpm-md\ngpgcheck=0" | tee /etc/yum.repos.d/vscode.repo >/dev/null
 
 dnf5 -y install \
 	code
@@ -28,27 +28,19 @@ dnf5 -y install \
 	azurelinux-rpm-macros \
 	azurelinux-sysinfo
 
-# Install Azure Linux kernel
-dnf5 -y remove --no-autoremove \
-	kernel \
-	kernel-core \
-	kernel-modules \
-	kernel-modules-core \
-	kernel-modules-extra
-
-dnf5 -y install \
-	kernel \
-	kernel-drivers-gpu \
-	kernel-drivers-intree-amdgpu \
-	kernel-drivers-sound \
-	kernel-drivers-accessibility \
-	kernel-uvm
+# # Install Azure Linux kernel
+# dnf5 -y remove --no-autoremove \
+# 	kernel \
+# 	kernel-core \
+# 	kernel-modules \
+# 	kernel-modules-core \
+# 	kernel-modules-extra
 
 # Flatten the kernel, bootc doesn't use /boot
-QUALIFIED_KERNEL="$(dnf5 repoquery --installed --queryformat='%{evr}' "kernel")"
-mv /boot/vmlinuz-"$QUALIFIED_KERNEL" /usr/lib/modules/"$QUALIFIED_KERNEL"/vmlinuz
+QUALIFIED_KERNEL="$(dnf5 repoquery --installed --queryformat='%{evr}.%{arch}' "kernel")"
+V="$(dnf5 repoquery --installed --queryformat='%{version}' "kernel")"
 
 # Rebuild initramfs
-/usr/bin/dracut --no-hostonly --kver "$QUALIFIED_KERNEL" --reproducible --zstd -v --add ostree -f "/usr/lib/modules/$QUALIFIED_KERNEL/initramfs.img"
+/usr/bin/dracut --no-hostonly --kver "$QUALIFIED_KERNEL" --reproducible --zstd -v --add ostree -f "/var/lib/modules/$QUALIFIED_KERNEL/initramfs.img"
 
-chmod 0600 /usr/lib/modules/"$QUALIFIED_KERNEL"/initramfs.img
+chmod 0600 /var/lib/modules/"$QUALIFIED_KERNEL"/initramfs.img
