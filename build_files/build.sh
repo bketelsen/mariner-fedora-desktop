@@ -38,9 +38,8 @@ dnf5 -y install \
 
 # Flatten the kernel, bootc doesn't use /boot
 QUALIFIED_KERNEL="$(dnf5 repoquery --installed --queryformat='%{evr}.%{arch}' "kernel")"
-V="$(dnf5 repoquery --installed --queryformat='%{version}' "kernel")"
 
 # Rebuild initramfs
-/usr/bin/dracut --no-hostonly --kver "$QUALIFIED_KERNEL" --reproducible --zstd -v --add ostree -f "/lib/modules/$QUALIFIED_KERNEL/initramfs.img"
+/usr/bin/dracut --no-hostonly --kver "$QUALIFIED_KERNEL" --reproducible --zstd -v --add ostree -f "/usr/lib/modules/$QUALIFIED_KERNEL/initramfs.img"
 
-chmod 0600 /lib/modules/"$QUALIFIED_KERNEL"/initramfs.img
+chmod 0600 /usr/lib/modules/"$QUALIFIED_KERNEL"/initramfs.img
