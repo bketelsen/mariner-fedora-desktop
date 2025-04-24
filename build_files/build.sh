@@ -41,6 +41,6 @@ QUALIFIED_KERNEL="$(dnf5 repoquery --installed --queryformat='%{evr}.%{arch}' "k
 V="$(dnf5 repoquery --installed --queryformat='%{version}' "kernel")"
 
 # Rebuild initramfs
-/usr/bin/dracut --no-hostonly --kver "$QUALIFIED_KERNEL" --reproducible --zstd -v --add ostree -f "/var/lib/modules/$QUALIFIED_KERNEL/initramfs.img"
+/usr/bin/dracut --no-hostonly --kver "$QUALIFIED_KERNEL" --reproducible --zstd -v --add ostree -f "/lib/modules/$QUALIFIED_KERNEL/initramfs.img"
 
-chmod 0600 /var/lib/modules/"$QUALIFIED_KERNEL"/initramfs.img
+chmod 0600 /lib/modules/"$QUALIFIED_KERNEL"/initramfs.img
